@@ -1,3 +1,5 @@
+//code snippet I created while working on a landing page
+
 var isMobile = {
     Android: function() {
         return navigator.userAgent.match(/Android/i);
@@ -27,9 +29,9 @@ function jsonObject() {};
 function Video() {
 
   this.mobileVidsArray = [ 
-    "http://d2jq83h1vduk6u.cloudfront.net/Carnival_final_v04a_mobile.mp4",
-    "http://d2jq83h1vduk6u.cloudfront.net/Carnival_final_v04a_mobile.mp4",
-    "http://d2jq83h1vduk6u.cloudfront.net/carnival_final_mobile.mp4"  
+    "sample-link",
+    "sample-link",
+    "sample-link"  
   ]
   this.mobileVidsObj = new jsonObject();
 
