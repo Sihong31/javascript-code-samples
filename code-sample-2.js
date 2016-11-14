@@ -51,8 +51,7 @@ function slickCarousel() {
 
 //Custom Carousel functions
 function Carousel() {
-  this.navArrows = $(".slick-prev, .slick-next");
-  this.navThumbnail = $(".slider-nav .slick-slide");
+  this.sliderNav = $(".slider-nav")
   this.navSlideSelected();
 };
 
@@ -66,7 +65,8 @@ Carousel.prototype = {
   },
 
   navThumbnailSelect: function() { //selected through navigation thumbnail click
-    this.navThumbnail.click( function(e){
+    var navSlide = ".slick-slide";
+    this.sliderNav.on("click", navSlide, function(e){
       e.preventDefault();
       $(this).addClass("selected");
       $(this).siblings().removeClass("selected");
@@ -75,9 +75,8 @@ Carousel.prototype = {
   },
 
   navArrowSelect: function() { //selected through carousel navigation arrows
-    var sliderNav = $(".slider-nav");
     var sliderArrows = ".slick-prev, .slick-next";
-    sliderNav.on("click", sliderArrows, function(e){  //make sure correct elements are clicked when going through breakpoints
+    this.sliderNav.on("click", sliderArrows, function(e){ //resolve event bubbling
       e.preventDefault();
       var navCurrentSlide = $(".slider-nav .slick-current");
 
