@@ -27,11 +27,10 @@ function jsonObject() {};
 
 //Video functions
 function Video() {
-
   this.mobileVidsArray = [ 
-    "sample-link",
-    "sample-link",
-    "sample-link"  
+    "http://d2jq83h1vduk6u.cloudfront.net/carnival_111016_v4_mobile.mp4",
+    "http://d2jq83h1vduk6u.cloudfront.net/Carnival_final_v04a_mobile.mp4",
+    "http://d2jq83h1vduk6u.cloudfront.net/carnival_final_mobile.mp4"  
   ]
   this.mobileVidsObj = new jsonObject();
 
@@ -63,8 +62,9 @@ Video.prototype = {
   videoPausePlay: function() { //pause play a video on click
     var videoComponents = $("video, .play-button");
     var videos = this.videos;
-    videoComponents.click(function(e) {
+    var pauseNotClicked = this.pauseNotClicked;
 
+    videoComponents.click(function(e) {
       e.preventDefault();
 
       var dataAttribute = $(this)[0].getAttribute('data-attribute');
@@ -74,7 +74,7 @@ Video.prototype = {
       if (video.paused == true) {
         playButton.hide();
         video.play();
-        Video.prototype.pauseNotClicked(videos, dataAttribute);
+        pauseNotClicked(videos, dataAttribute);
       }
 
       else {
@@ -86,7 +86,6 @@ Video.prototype = {
   },
 
   pauseNotClicked: function(videos, dataAttribute) { //pause currently playing videos when another video is clicked on for playing
-
     videos.each(function(index) {
       var currentDataAtt = videos[index].getAttribute('data-attribute'); //find data-attribute of current video element
       var playButton = $("#video-" + currentDataAtt + "-pb"); //play button for current video element
@@ -114,41 +113,44 @@ Video.prototype = {
       });
     }  
   }
-
 }
 
 //Page scroll functions
 function Page() {
-
-  this.videoOffset = $('#video-1').offset().top;
-  this.videoHeight = $('#video-1').height();
-  this.windowHeight = $(window).height();
-
-  this.distance = this.videoOffset - this.windowHeight + this.videoHeight;
-
   this.pageScroll();
-
 }
 
 Page.prototype = {
 
     constructor: Page,
 
-    pageScroll: function() {
+    calculateDistance: function() {
+        this.videoOffset = $('#video-1').offset().top;
+        this.videoHeight = $('#video-1').height();
+        this.windowHeight = $(window).height();
 
+        this.distance = this.videoOffset - this.windowHeight + this.videoHeight;
+        return this.distance;
+    },
+
+    pageScroll: function() {
       var page = $('html,body');
       var arrow = $('#scroll-arrow');
-      var distance = this.distance;
+      var pageOn = this.pageOn;
+      var pageOff = this.pageOff;
+      var calculateDistance = this.calculateDistance;
 
       arrow.click(function(e) {
 
+        var distance = calculateDistance(); //taken into account window resizing, recalculate distance
+
         e.preventDefault();
-        Page.prototype.pageOn(page);
+        pageOn(page);
 
         page.animate( {
           scrollTop: distance
-        }, 2500, function() {
-          Page.prototype.pageOff(page);
+        }, 1000, function() {
+          pageOff(page);
         });
 
       });
@@ -161,7 +163,6 @@ Page.prototype = {
     pageOff: function(page) {
       page.off("scroll mousedown wheel DOMMouseScroll mousewheel keyup touchmove");
     }
-
 }
 
 //initialize
