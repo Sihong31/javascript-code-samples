@@ -1,6 +1,8 @@
-//code snippet I created while working on a landing page
+//code snippet for a landing page involving multiple videos
 
-var isMobile = {
+"use strict";
+
+const isMobile = {
     Android: function() {
         return navigator.userAgent.match(/Android/i);
     },
@@ -46,8 +48,8 @@ Video.prototype = {
 
   createMobileVids: function() { //create json object from mobileVidsArray
     this.mobileVidsObj.Videos = new jsonObject();
-    for (var i = 1; i <= this.mobileVidsArray.length; i++) {
-      var sourceNum = "Source" + i; //Source1, Source2, Source3...
+    for (let i = 1; i <= this.mobileVidsArray.length; i++) {
+      let sourceNum = "Source" + i; //Source1, Source2, Source3...
       this.mobileVidsObj.Videos[sourceNum] = this.mobileVidsArray[i-1]; //set keys as Source# and value as video link
     }
             // this.mobileVidsObj = { 
@@ -60,23 +62,23 @@ Video.prototype = {
   },
 
   videoPausePlay: function() { //pause play a video on click
-    var videoComponents = $("video, .play-button");
-    var videos = this.videos;
-    var pauseNotClicked = this.pauseNotClicked;
+    const videoComponents = $("video, .play-button");
+    const videos = this.videos;
+    const pauseNotClicked = this.pauseNotClicked;
 
     videoComponents.click(function(e) {
       e.preventDefault();
 
-      var dataAttribute = $(this)[0].getAttribute('data-attribute');
-      var video = $("#video-" + dataAttribute)[0];
-      var playButton = $("#video-" + dataAttribute + "-pb");
+      const dataAttribute = $(this)[0].getAttribute('data-attribute');
+      const video = $("#video-" + dataAttribute)[0];
+      const playButton = $("#video-" + dataAttribute + "-pb");
 
       if (video.paused == true) {
         playButton.hide();
         video.play();
         pauseNotClicked(videos, dataAttribute);
       }
-
+      
       else {
         playButton.show();
         video.pause();
@@ -87,8 +89,8 @@ Video.prototype = {
 
   pauseNotClicked: function(videos, dataAttribute) { //pause currently playing videos when another video is clicked on for playing
     videos.each(function(index) {
-      var currentDataAtt = videos[index].getAttribute('data-attribute'); //find data-attribute of current video element
-      var playButton = $("#video-" + currentDataAtt + "-pb"); //play button for current video element
+      const currentDataAtt = videos[index].getAttribute('data-attribute'); //find data-attribute of current video element
+      const playButton = $("#video-" + currentDataAtt + "-pb"); //play button for current video element
 
       if (currentDataAtt !== dataAttribute) { //pause all other videos when current video is clicked to play
         videos[index].pause();
@@ -104,11 +106,11 @@ Video.prototype = {
 
   isMobileVideo: function() { //find out if a mobile video is needed because user agent matches a mobile device
     if( isMobile.any()) {
-      var videos = this.videos;
-      var mobileVidsObj = this.mobileVidsObj;
+      const videos = this.videos;
+      const mobileVidsObj = this.mobileVidsObj;
       videos.each(function(index) { 
-        var vidID = videos[index].getAttribute('data-attribute');
-        var vidSource = "Source" + vidID
+        const vidID = videos[index].getAttribute('data-attribute');
+        const vidSource = "Source" + vidID
         videos[index].src = mobileVidsObj.Videos[vidSource];
       });
     }  
@@ -124,25 +126,24 @@ Page.prototype = {
 
     constructor: Page,
 
-    calculateDistance: function() {
-        this.videoOffset = $('#video-1').offset().top;
-        this.videoHeight = $('#video-1').height();
-        this.windowHeight = $(window).height();
+    calculateDistance: function(el) {
+        el.videoOffset = $('#video-1').offset().top;
+        el.videoHeight = $('#video-1').height();
+        el.windowHeight = $(window).height();
 
-        this.distance = this.videoOffset - this.windowHeight + this.videoHeight;
-        return this.distance;
+        const distance = el.videoOffset - el.windowHeight + el.videoHeight;
+        return distance;
     },
 
     pageScroll: function() {
-      var page = $('html,body');
-      var arrow = $('#scroll-arrow');
-      var pageOn = this.pageOn;
-      var pageOff = this.pageOff;
-      var calculateDistance = this.calculateDistance;
+      const page = $('html,body');
+      const arrow = $('#scroll-arrow');
+      const pageOn = this.pageOn;
+      const pageOff = this.pageOff;
+      const calculateDistance = this.calculateDistance;
 
       arrow.click(function(e) {
-
-        var distance = calculateDistance(); //taken into account window resizing, recalculate distance
+        const distance = calculateDistance(this); //taken into account window resizing, recalculate distance
 
         e.preventDefault();
         pageOn(page);
@@ -175,7 +176,5 @@ function init() {
 document.addEventListener('DOMContentLoaded', function() {
   init();
 }, false);
-
-
 
 
