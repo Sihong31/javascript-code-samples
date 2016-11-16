@@ -1,10 +1,10 @@
 //code sample involving slick.js and custom functions for the carousel
-
+"use strict";
 
 //Slick Carousel functions
 function slickCarousel() {
-  var mainSlide = $('.slider-for');
-  var carouselNav = $('.slider-nav');
+  const mainSlide = $('.slider-for');
+  const carouselNav = $('.slider-nav');
 
   mainSlide.slick({
     slidesToShow: 1,
@@ -65,24 +65,28 @@ Carousel.prototype = {
   },
 
   navThumbnailSelect: function() { //selected through navigation thumbnail click
-    var navSlide = ".slick-slide";
-    var playCurrentThumbnail = this.playCurrentThumbnail;
+    const navSlide = ".slick-slide";
+    const playCurrentThumbnail = this.playCurrentThumbnail;
+    const sliderNav = this.sliderNav;
 
-    this.sliderNav.on("click", navSlide, function(e){
+    sliderNav.on("click", navSlide, function(e){
       e.preventDefault();
+
       $(this).addClass("selected");
       $(this).siblings().removeClass("selected");
+      
       playCurrentThumbnail( $(this) );
     })
   },
 
   navArrowSelect: function() { //selected through carousel navigation arrows
-    var sliderArrows = ".slick-prev, .slick-next";
-    var pauseOnArrowSelect = this.pauseOnArrowSelect;
+    const sliderArrows = ".slick-prev, .slick-next";
+    const pauseOnArrowSelect = this.pauseOnArrowSelect;
     
     this.sliderNav.on("click", sliderArrows, function(e){ //resolve event bubbling
       e.preventDefault();
-      var navCurrentSlide = $(".slider-nav .slick-current");
+
+      const navCurrentSlide = $(".slider-nav .slick-current");
 
       navCurrentSlide.addClass("selected");
       navCurrentSlide.siblings().removeClass("selected");
@@ -92,14 +96,14 @@ Carousel.prototype = {
 
 
   playCurrentThumbnail: function(el) { //play currently selected thumbnail video, pause all others
-    var videos = $("video");
-    var slideID = el.data('slide');
+    const videos = $("video");
+    const slideID = el.data('slide');
 
-    var playButtons = $(".play-button");
-    var currentPlayButton = $("#video-" + slideID + "-pb");
+    const playButtons = $(".play-button");
+    const currentPlayButton = $("#video-" + slideID + "-pb");
 
     videos.each(function(index){
-      var video = videos[index];
+      const video = videos[index];
       if ( el.hasClass("selected") && index + 1 == slideID ) {
         video.play();
         currentPlayButton.hide();
@@ -112,10 +116,10 @@ Carousel.prototype = {
   },
 
   pauseOnArrowSelect: function() { //pause currently playing video if user navigates away using arrows
-    var videos = $("video");
+    const videos = $("video");
     videos.each(function (index) {
-      var video = videos[index];
-      var playButton = $("#video-" + (index + 1) + "-pb");
+      const video = videos[index];
+      const playButton = $("#video-" + (index + 1) + "-pb");
       if (!video.paused) {
         video.pause();
         playButton.show();
