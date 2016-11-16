@@ -66,23 +66,27 @@ Carousel.prototype = {
 
   navThumbnailSelect: function() { //selected through navigation thumbnail click
     var navSlide = ".slick-slide";
+    var playCurrentThumbnail = this.playCurrentThumbnail;
+
     this.sliderNav.on("click", navSlide, function(e){
       e.preventDefault();
       $(this).addClass("selected");
       $(this).siblings().removeClass("selected");
-      Carousel.prototype.playCurrentThumbnail( $(this) );
+      playCurrentThumbnail( $(this) );
     })
   },
 
   navArrowSelect: function() { //selected through carousel navigation arrows
     var sliderArrows = ".slick-prev, .slick-next";
+    var pauseOnArrowSelect = this.pauseOnArrowSelect;
+    
     this.sliderNav.on("click", sliderArrows, function(e){ //resolve event bubbling
       e.preventDefault();
       var navCurrentSlide = $(".slider-nav .slick-current");
 
       navCurrentSlide.addClass("selected");
       navCurrentSlide.siblings().removeClass("selected");
-      Carousel.prototype.pauseOnArrowSelect();
+      pauseOnArrowSelect();
     })
   },
 
