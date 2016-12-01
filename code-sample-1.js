@@ -1,3 +1,5 @@
+//code sample for a landing page involving multiple videos and down scrolling
+
 "use strict";
 
 const isMobile = {
