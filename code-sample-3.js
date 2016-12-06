@@ -6,7 +6,9 @@
 
 function SideMenu() {
 	this.sideMenuItems = $("#primary .menu-side-navigation-container #menu-side-navigation li a");
+	this.containerID = parseInt($(".subpage-container").attr("id").split("container-").pop());
 
+	this.itemAddID();
 	this.itemClassOnLoad();
 	this.toBuild();
 	this.dropdownTextState();
@@ -22,14 +24,16 @@ SideMenu.prototype = {
 
 	dropdownTextState: function() {
 		const sideMenuItems = this.sideMenuItems;
-		const pathName = location.pathname;
+		// const pathName = location.pathname;
+		const containerID = this.containerID;
 		const replaceDropdownText = this.replaceDropdownText;
 
 		sideMenuItems.each(function(index){
-			const itemLink = sideMenuItems[index].href;
-			const partialLink = itemLink.split("http://localhost:8888").pop();
+			const itemLinkID = sideMenuItems[index].id;
+			// const itemLink = sideMenuItems[index].href;
+			// const partialLink = `/wlcaulk${itemLink.split("/wlcaulk")[1]}`;
 			const linkText = $(sideMenuItems[index]).text();
-			if (pathName == partialLink) {
+			if (containerID == itemLinkID) {
 
 				replaceDropdownText(sideMenuItems, linkText); //makes sure to replace dropdown text on load
 
@@ -37,6 +41,20 @@ SideMenu.prototype = {
 					replaceDropdownText(sideMenuItems, linkText); //makes sure to replace dropdown text on window resizing
 				});
 			}
+		});
+	},
+
+	itemAddID: function() {
+		const idArr = [
+						"12138", //brand assets
+						"12170", //application videos
+						"12203", //product images
+						"12215", //testimonials
+						"12236"  //news and press releases
+					];
+		const sideMenuItems = this.sideMenuItems;
+		sideMenuItems.each(function(index) {
+			$(sideMenuItems[index]).attr("id", idArr[index]);
 		});
 	},
 
@@ -49,15 +67,18 @@ SideMenu.prototype = {
 	},
 
 	itemClassOnLoad: function() { //determine which menu item on side nav should be active depending on page url
-		const pathName = location.pathname;
+		// const pathName = location.pathname;
 		const sideMenuItems = this.sideMenuItems;
 		const itemAddClass = this.itemAddClass;
 		const itemRemoveClass = this.itemRemoveClass;
 
+		const containerID = this.containerID;
+
 		sideMenuItems.each(function(index) {
-			const itemLink = sideMenuItems[index].href;
-			const partialLink = itemLink.split("http://localhost:8888").pop();
-			if (pathName == partialLink) {
+			const itemLinkID = sideMenuItems[index].id;
+			// const itemLink = sideMenuItems[index].href;
+			// const partialLink = `/wlcaulk${itemLink.split("/wlcaulk")[1]}`;
+			if (containerID == itemLinkID) {
 				itemAddClass($(sideMenuItems[index]));
 			}
 			else {
