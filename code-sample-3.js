@@ -24,14 +24,11 @@ SideMenu.prototype = {
 
 	dropdownTextState: function() {
 		const sideMenuItems = this.sideMenuItems;
-		// const pathName = location.pathname;
 		const containerID = this.containerID;
 		const replaceDropdownText = this.replaceDropdownText;
 
 		sideMenuItems.each(function(index){
 			const itemLinkID = sideMenuItems[index].id;
-			// const itemLink = sideMenuItems[index].href;
-			// const partialLink = `/wlcaulk${itemLink.split("/wlcaulk")[1]}`;
 			const linkText = $(sideMenuItems[index]).text();
 			if (containerID == itemLinkID) {
 
@@ -67,7 +64,6 @@ SideMenu.prototype = {
 	},
 
 	itemClassOnLoad: function() { //determine which menu item on side nav should be active depending on page url
-		// const pathName = location.pathname;
 		const sideMenuItems = this.sideMenuItems;
 		const itemAddClass = this.itemAddClass;
 		const itemRemoveClass = this.itemRemoveClass;
@@ -76,8 +72,6 @@ SideMenu.prototype = {
 
 		sideMenuItems.each(function(index) {
 			const itemLinkID = sideMenuItems[index].id;
-			// const itemLink = sideMenuItems[index].href;
-			// const partialLink = `/wlcaulk${itemLink.split("/wlcaulk")[1]}`;
 			if (containerID == itemLinkID) {
 				itemAddClass($(sideMenuItems[index]));
 			}
@@ -87,7 +81,7 @@ SideMenu.prototype = {
 		});
 	},
 
-	buildDropdown: function() { //piece together mobile dropdown menu
+	buildMobileDropdown: function() { //piece together mobile dropdown menu
 		const dropdownList = $(".desktop-sidenav .navlist");
 		const btnTemplate = 
 			`
@@ -104,10 +98,9 @@ SideMenu.prototype = {
 
         const mobileSideNav = $(".mobile-sidenav");
         mobileSideNav.prepend(btnTemplate);
-
 	},
 
-	toggleDropdown: function(fn, isBuilt) { //toggle dropdown menu depending on window size
+	toggleDropdown: function(fn, isBuilt) { //change type of dropdown menu depending on window size
 		const dropdownList = $(".desktop-sidenav .navlist");
 		$(window).resize(function() {
 			let winWidth = window.innerWidth;
@@ -120,21 +113,35 @@ SideMenu.prototype = {
 			if ( winWidth < 768 && isBuilt == false) { //build on page resize if less than 768px
 				fn();
 				isBuilt = true; //toggle to build only once
+			}
+		    if (winWidth > 767) { //if user leaves dropdown open and goes to larger window view, close that dropdown in the mobile view
+				dropdownList.addClass("hidden-xs");
 			}			
 		});
+        //display dropdown list only after button is clicked on, prevents desktop navlist from briefly loading before dropdown structure is built around it via js
+        $("body").on("click", ".dropdown-toggle", function(){
+        	// if ( dropdownList.hasClass("hidden-xs") ) {
+        	if (dropdownList.css("display") !== "block") { 
+        		dropdownList.css("display", "block");
+        		dropdownList.removeClass("hidden-xs");
+        	}
+        	else {    
+        		dropdownList.addClass("hidden-xs");
+        	}
+        });
 	},
 
 	toBuild: function() {
 		let isBuilt = false;
 		const winWidth  = window.innerWidth;
-		const buildDropdown = this.buildDropdown;
+		const buildMobileDropdown = this.buildMobileDropdown;
 
 		if ( winWidth < 768 && isBuilt == false) { //build on page load if less than 768px
-			buildDropdown();
+			buildMobileDropdown();
 			isBuilt = true; //toggle to build only once
 		}
 
-		this.toggleDropdown(buildDropdown, isBuilt);
+		this.toggleDropdown(buildMobileDropdown, isBuilt);
 	}
 
 };
