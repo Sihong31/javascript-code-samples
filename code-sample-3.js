@@ -3,7 +3,6 @@
 //videos open up in modals
 
 "use strict";
-
 function SideMenu() {
 	this.sideMenuItems = $("#primary .menu-side-navigation-container #menu-side-navigation li a");
 	this.containerID = parseInt($(".subpage-container").attr("id").split("container-").pop());
@@ -12,11 +11,21 @@ function SideMenu() {
 	this.itemClassOnLoad();
 	this.toBuild();
 	this.dropdownTextState();
+	// this.setLocation();
 };
 
 SideMenu.prototype = {
 
 	constructor: SideMenu,
+
+	setLocation: function() { //drop user to top of mobile dropdown when an option is selected
+		$("body").on("click", ".navlist", function(e){
+			const winWidth  = window.innerWidth;
+			if (winWidth < 768) {
+				window.location.hash = `#mobile-sidenav`;
+			}
+		})
+	},
 
 	replaceDropdownText: function(menuItems, textToReplace) {
 		menuItems.parents(".dropdown").find('.btn').html(`${textToReplace}<span class="caret"></span>`);
@@ -43,11 +52,11 @@ SideMenu.prototype = {
 
 	itemAddID: function() {
 		const idArr = [
-						"12138", //brand assets
-						"12170", //application videos
-						"12203", //product images
-						"12215", //testimonials
-						"12236"  //news and press releases
+						"12183", //brand assets
+						"12185", //application videos
+						"12187", //product images
+						"12189", //testimonials
+						"12191"  //news and press releases
 					];
 		const sideMenuItems = this.sideMenuItems;
 		sideMenuItems.each(function(index) {
@@ -90,7 +99,7 @@ SideMenu.prototype = {
                 <span class="caret"></span>
               </button>
             `;
-        const navTemplate = `<div class="mobile-sidenav dropdown"></div>`
+        const navTemplate = `<div id="mobile-sidenav" class="mobile-sidenav dropdown"></div>`
 
         dropdownList.addClass("dropdown-menu pull-right");
         dropdownList.attr("aria-labelledby","dropdownMenu1");
@@ -173,7 +182,7 @@ Modal.prototype = {
 		  </div>
 		</div>
 		`
-		$("#container-12170").append(this.modalTemplate);
+		$("#container-12185").append(this.modalTemplate);
 	},
 
 	calculateCenter: function() {
@@ -200,13 +209,14 @@ Modal.prototype = {
 	},
 
 	playModalVideo: function() { //video img on click, take video src and create iframe for it in modal
-		const videoImg = "#container-12170 .wp-caption img";
+		const videoImgLink = "#container-12185 .wp-caption a";
 		const videoModal = $("#video-modal");
 		const modalIframe = $("#video-modal iframe");
 
-		$("body").on("click", videoImg, function(e) {
+		$("body").on("click", videoImgLink, function(e) {
 			e.preventDefault();
-			const youtubeID = $(this)[0].alt;
+			console.log($(this).children('img')[0].alt)
+			const youtubeID = $(this).children('img')[0].alt;
 	        const src = "//www.youtube.com/embed/" + youtubeID + "?autoplay=0&theme=dark&loop=0&fs=1&showinfo=1&modestbranding=0&iv_load_policy=1&color=red&autohide=1&disablekb=0&enablejsapi=1&version=3";
 	        videoModal.modal("show");
 	        modalIframe.attr("src", src);
@@ -224,8 +234,14 @@ Modal.prototype = {
 }
 
 function Page() {
-	const productImagesLinks = "#container-12203 .document-icon a";
+	const productImagesLinks = "#container-12187 .document-icon a";
+	const brandImageLinks = "#container-12183 .document-icon a";
+	this.preventLinkDefault(brandImageLinks);
 	this.preventLinkDefault(productImagesLinks);
+	this.showSearchBox();
+	// this.setBrandDownloadLinks();
+	// this.setProductDownloadLinks();
+	this.setProductAnchorLinks();
 };
 
 Page.prototype = {
@@ -236,7 +252,73 @@ Page.prototype = {
 		$("body").on("click", el, function(e){
 			e.preventDefault();
 		})
+	},
+
+	showSearchBox: function() {
+		$("div#search-container").removeClass("hide");
+	},
+
+	setProductAnchorLinks: function() { //auto generate anchor links on products page from h2 header content
+		const productPage = $("#container-12187");
+		const productHeaders = $("#container-12187 h2");
+		const mainHeader = $("#container-12187 .subpage-header");
+		const productLinkContainer = $(`<div id=product-link-container></div>`);
+		mainHeader.after(productLinkContainer);
+
+		productHeaders.each(function(index){
+			if( productPage.length && index > 0) {
+				const replaceSpace = new RegExp(String.fromCharCode(160), "g"); //&nbsp;
+				const headerText = $(productHeaders[index]).text().split(' ').join('-').replace(replaceSpace, "");
+				const headerID =  $(productHeaders[index]).attr("id", headerText);
+				const anchorTemplate = $(`<a href=#${headerText}>${headerText}</a>`);
+				productLinkContainer.append(anchorTemplate);
+			}
+		});
+
 	}
+
+	// setProductAnchorLinks: function() { //auto generate h2 headers from anchor links on product images page
+	// 	const productPage = $("#container-12187");
+	// 	if ( productPage.length ) {
+	// 		const productContainerLinks = $("#container-12187 #product-link-container a");
+	// 		const headerContainer = $(".header-container");
+	// 		productContainerLinks.each(function (index){
+	// 			const headerTemplate = $("<h2 class='product-images-header'></h2>");
+	// 			const headerID = productContainerLinks[index].href.split("#").pop();
+	// 			const headerText = productContainerLinks[index].text;
+	// 			const header = $(headerContainer[index]).append(headerTemplate).children('h2').attr("id", headerID);
+	// 			header.text(headerText);
+	// 		});
+	// 	}
+	// },
+
+
+
+	// setProductDownloadLinks: function() { //auto generate download links on product images page
+	// 	const productPage = $("#container-12187");
+	// 	if ( productPage.length ) {
+	// 		const productLinks = $(".document-icon-row .document-icon a");
+	// 		const productContainers = $(".document-icon-row");	
+	// 		productLinks.each(function(index){
+	// 			const productLink = productLinks[index].href;
+	// 			const anchorTemplate = $(`<a href=${productLink} download>Download for Web</a>`);
+	// 			$(productContainers[index]).children('p').prepend(anchorTemplate);
+	// 		});
+	// 	}
+	// },
+
+	// setBrandDownloadLinks: function() { //auto generate download links for brand assets page
+	// 	const brandAssetsPage = $("#container-12183");
+	// 	if (brandAssetsPage.length) {
+	// 		const brandAssetLinks = $(".document-icon-row .document-icon a");
+	// 		const brandAssetContainers = $(".document-icon-row");
+	// 		brandAssetLinks.each(function(index){
+	// 			const brandAssetLink = brandAssetLinks[index].href;
+	// 			const anchorTemplate = $(`<a href=${brandAssetLink} download>Download</a>`);
+	// 			$(brandAssetContainers[index]).children('p').append(anchorTemplate);
+	// 		});
+	// 	}
+	// }
 }
 
 function init() {
@@ -248,3 +330,4 @@ function init() {
 document.addEventListener("DOMContentLoaded", function(e) {
 	init();
 });
+
